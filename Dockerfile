@@ -1,12 +1,13 @@
 FROM gradle:8.5-jdk17 AS build
+
 WORKDIR /app
 
-COPY --chown=gradle:gradle . .
+COPY . .
 
-RUN gradle build -x test --no-daemon
+RUN chmod +x gradlew
+RUN gradle bootJar --no-daemon -x test
 
 FROM eclipse-temurin:17-jre-alpine
-
 WORKDIR /app
 
 COPY --from=build /app/build/libs/*.jar app.jar
